@@ -52,4 +52,27 @@ function cyclicOrder(rules, states) {
   return newStates;
 }
 
-export { randOrder, cyclicOrder };
+function randIndOrder(rules, states) {
+  let newStates = Array.from(states);
+  let updateOrder = [];
+  let i;
+  for (i = 0; i < states.length; i++) {
+    updateOrder.push(Math.floor(Math.random() * states.length));
+  }
+  for (i = 0; i < states.length; i++) {
+    newStates[updateOrder[i]] = rules[getRule(newStates, i)];
+  }
+  return newStates;
+}
+
+function syncOrder(rules, states) {
+  let newStates = Array.from(states);
+  let i;
+  for (i = 0; i < states.length; i++) {
+    newStates[i] = rules[getRule(states, i)];
+  }
+
+  return newStates;
+}
+
+export { randOrder, cyclicOrder, randIndOrder, syncOrder };

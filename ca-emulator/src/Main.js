@@ -15,7 +15,13 @@ import Rules from "./Rules";
 import InputCellGrid from "./InputCellGrid";
 import OutputCellGrid from "./OutputCellGrid";
 
-import { randOrder, cyclicOrder } from "./updateSchemes";
+// Updating methods
+import {
+  randOrder,
+  cyclicOrder,
+  randIndOrder,
+  syncOrder,
+} from "./updateSchemes";
 
 function Copyright() {
   return (
