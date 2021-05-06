@@ -75,4 +75,4 @@ function syncOrder(rules, states) {
   return newStates;
 }
 
-export { shuffleArray, randOrder, cyclicOrder, randIndOrder, syncOrder };
+export { randOrder, cyclicOrder, randIndOrder, syncOrder };

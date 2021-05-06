@@ -14,7 +14,12 @@ import Rules from "./Rules";
 import CellGrid from "./CellGrid";
 
 // Updating methods
-import { shuffleArray, randOrder, cyclicOrder } from "./updateSchemes";
+import {
+  randOrder,
+  cyclicOrder,
+  randIndOrder,
+  syncOrder,
+} from "./updateSchemes";
 
 function Copyright() {
   return (
@@ -83,6 +88,8 @@ export default function Main() {
   console.log(randOrder(rules, cells));
 
   console.log(cyclicOrder(rules, cells));
+  console.log(randIndOrder(rules, cells));
+  console.log(syncOrder(rules, cells));
 
   return (
     <React.Fragment>
