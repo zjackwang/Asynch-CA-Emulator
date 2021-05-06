@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import AppBar from "@material-ui/core/AppBar";
 import Button from "@material-ui/core/Button";
 import CellsIcon from "@material-ui/icons/GroupWork";
@@ -68,25 +68,35 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 export default function Main() {
   const classes = useStyles();
 
-  const [size, setSize] = React.useState(20);
-  const [rows, setRows] = React.useState(0);
-  const [showInput, setShowInput] = React.useState(true);
-  const [maxRows, setMaxRows] = React.useState(20);
-  const [ruleArray, setRuleArray] = React.useState(
+  const [size, setSize] = useState(20);
+  const [rows, setRows] = useState(0);
+  const [showInput, setShowInput] = useState(true);
+  const [maxRows, setMaxRows] = useState(20);
+  const [ruleArray, setRuleArray] = useState(
     Array.from({ length: 8 }).map((x) => false)
   );
-  const [inputArray, setInputArray] = React.useState(
+  const [inputArray, setInputArray] = useState(
     Array.from({ length: 20 }).map((x) => false)
   );
-  const [outputArrays, setOutputArrays] = React.useState(
+  const [outputArrays, setOutputArrays] = useState(
     Array.from({ length: 20 }).map((x) =>
       Array.from({ length: 20 }).map((x) => false)
     )
   );
-  const [started, setStarted] = React.useState(false); // TODO disable adjusting rules/inputs once started
-  const [mode, setMode] = React.useState("Synchronous");
+  const [started, setStarted] = useState(false);
+  const [running, setRunning] = useState(false);
+  const [mode, setMode] = useState("Synchronous");
 
   const modes = ["Synchronous", "Random Independent", "Random Order", "Cyclic"];
+
+  const rowRef = useRef(0);
+  rowRef.current = rows;
+  const maxRowRef = useRef(0);
+  maxRowRef.current = maxRows;
+  const showInputRef = useRef(true);
+  showInputRef.current = showInput;
+  const runningRef = useRef(0);
+  runningRef.current = running;
 
   useEffect(() => {
     console.log(ruleArray);
@@ -114,6 +124,21 @@ export default function Main() {
     setInputArray(Array.from({ length: newSize }).map((x) => false));
   };
 
+  let interval;
+
+  const handleOnClickRun = () => {
+    setStarted(true);
+    setRunning(true);
+    interval = setInterval(() => {
+      console.log(runningRef.current);
+      if (runningRef.current) {
+        handleOnClickStep();
+      } else {
+        clearInterval(interval);
+      }
+    }, 1000);
+  };
+
   const handleOnClickStart = () => {
     setStarted(true);
     handleOnClickStep();
@@ -121,6 +146,7 @@ export default function Main() {
 
   const handleOnClickStop = () => {
     setStarted(false);
+    setRunning(false);
     setInputArray(Array.from({ length: size }).map((x) => false));
     setOutputArrays(
       Array.from({ length: size }).map((x) =>
@@ -151,18 +177,17 @@ export default function Main() {
         newArray = Array.from({ length: size }).map((x) => false); // replace with function call(ruleArray, inputArray) for synchronous
         break;
     }
-
     setOutputArrays((oldArray) => {
-      if (rows === maxRows) {
-        if (showInput) {
+      if (rowRef.current === maxRowRef.current) {
+        if (showInputRef.current) {
           setShowInput(false);
-          setMaxRows(maxRows + 1);
+          setMaxRows(maxRowRef.current + 1);
         }
         oldArray.shift();
         return [...oldArray, newArray];
       }
-      oldArray[rows] = newArray;
-      setRows(rows + 1);
+      oldArray[rowRef.current] = newArray;
+      setRows(rowRef.current + 1);
       return oldArray;
     });
     setInputArray(newArray);
@@ -252,6 +277,16 @@ export default function Main() {
                     </Grid>
                     <Grid item>
                       <Grid container spacing={2}>
+                        <Grid item>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            disabled={started}
+                            onClick={handleOnClickRun}
+                          >
+                            Run
+                          </Button>
+                        </Grid>
                         <Grid item>
                           <Button
                             variant="contained"
