@@ -60,6 +60,7 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
  * 2. asynch - random w/o replacement
  */
 export default function Main() {
+  let MAXROWS = 30;
   const classes = useStyles();
 
   const [size, setSize] = React.useState(20);
@@ -121,12 +122,11 @@ export default function Main() {
         newArray = Array.from({ length: size }).map((x) => false); // replace with function call(ruleArray, inputArray)
         break;
       case "Random Order":
-        newArray = Array.from({ length: size }).map((x) => false); // replace with function call(ruleArray, inputArray)
+        newArray = randOrder(ruleArray, inputArray); // replace with function call(ruleArray, inputArray)
         break;
       case "Cyclic":
-        newArray = Array.from({ length: size }).map((x) => false); // replace with function call(ruleArray, inputArray)
+        newArray = cyclicOrder(ruleArray, inputArray); // replace with function call(ruleArray, inputArray)
         break;
-
       default:
         newArray = Array.from({ length: size }).map((x) => false); // replace with function call(ruleArray, inputArray) for synchronous
         break;
@@ -138,28 +138,6 @@ export default function Main() {
   const handleModeChange = (event) => {
     setMode(event.target.value);
   };
-
-  // TESTING updateScheme.js in console
-  // impulse
-  const cells = Array.of(
-    false,
-    false,
-    false,
-    false,
-    true,
-    false,
-    false,
-    false,
-    false
-  );
-  // rule 110
-  const rules = Array.of(false, true, true, false, true, true, true, false);
-
-  console.log(cells);
-
-  console.log(randOrder(rules, cells));
-
-  console.log(cyclicOrder(rules, cells));
 
   return (
     <React.Fragment>

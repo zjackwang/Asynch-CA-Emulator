@@ -6,10 +6,10 @@ function shuffleArray(arr) {
 
 function getRule(states, cell) {
   let i = 0;
-  if (cell == 0) {
+  if (cell === 0) {
     if (states[cell + 1]) i = i + 1;
     if (states[cell]) i = i + 2;
-  } else if (cell == states.length - 1) {
+  } else if (cell === states.length - 1) {
     if (states[cell]) i = i + 2;
     if (states[cell - 1]) i = i + 4;
   } else {
@@ -52,4 +52,4 @@ function cyclicOrder(rules, states) {
   return newStates;
 }
 
-export { shuffleArray, randOrder, cyclicOrder };
+export { randOrder, cyclicOrder };
