@@ -10,6 +10,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Link from '@material-ui/core/Link';
 import TextField from '@material-ui/core/TextField';
+import MenuItem from '@material-ui/core/MenuItem';
 import Rules from './Rules';
 import InputCellGrid from './InputCellGrid';
 import OutputCellGrid from './OutputCellGrid';
@@ -60,6 +61,9 @@ export default function Main() {
   const [inputArray, setInputArray] = React.useState(Array.from({length: 20}).map(x => false));
   const [outputArrays, setOutputArrays] = React.useState([]);
   const [started, setStarted] = React.useState(false);
+  const [mode, setMode] = React.useState("Synchronous");
+
+  const modes = ["Synchronous", "Random Independent", "Random Order", "Cyclic"];
 
   useEffect(() => {
     console.log(ruleArray);
@@ -84,13 +88,12 @@ export default function Main() {
   const handleChange = (event) => {
     const newSize = event.target.value;
     setSize(newSize);
-    setInputArray(Array.from({length: newSize}).map(x => false))
+    setInputArray(Array.from({length: newSize}).map(x => false));
   };
 
   const handleOnClickStart = () => {
     setStarted(true);
-    setOutputArrays(oldArray => [...oldArray, Array.from({length: size}).map(x => false)])
-    console.log(outputArrays);
+    handleOnClickStep();
   }
 
   const handleOnClickStop = () => {
@@ -99,7 +102,31 @@ export default function Main() {
   }
 
   const handleOnClickStep = () => {
-    setOutputArrays(oldArray => [...oldArray, Array.from({length: size}).map(x => false)])
+    var newArray = [];
+    switch(mode) {
+      case "Synchronous":
+        newArray = Array.from({length: size}).map(x => false) // replace with function call(ruleArray, inputArray)
+        break;
+      case "Random Independent":
+        newArray = Array.from({length: size}).map(x => false) // replace with function call(ruleArray, inputArray)
+        break;
+      case "Random Order":
+        newArray = Array.from({length: size}).map(x => false) // replace with function call(ruleArray, inputArray)
+        break;
+      case "Cyclic":
+        newArray = Array.from({length: size}).map(x => false) // replace with function call(ruleArray, inputArray)
+        break;
+
+      default:
+        newArray = Array.from({length: size}).map(x => false) // replace with function call(ruleArray, inputArray) for synchronous
+        break;
+    }
+    setOutputArrays(oldArray => [...oldArray, newArray])
+    setInputArray(newArray);
+  };
+
+  const handleModeChange = (event) => {
+    setMode(event.target.value);
   };
 
   return (
@@ -133,32 +160,57 @@ export default function Main() {
                 <div className={classes.heroButtons}>
                   <Grid container spacing={2} justify="center" alignItems="center">
                     <Grid item>
-                    <TextField
-                      id="filled-number"
-                      label="Size"
-                      type="number"
-                      defaultValue={20}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      variant="filled"
-                      onChange={handleChange}
-                    />
+                      <Grid container spacing={2}>
+                        <Grid item>
+                          <TextField
+                            id="mode"
+                            select
+                            label="Mode"
+                            value={mode}
+                            onChange={handleModeChange}
+                            helperText="Please select a Cellular Automata type."
+                            variant="filled"
+                          >
+                            {modes.map((option) => (
+                              <MenuItem key={option} value={option}>
+                                {option}
+                              </MenuItem>
+                            ))}
+                          </TextField>
+                        </Grid>
+                        <Grid item>
+                          <TextField
+                            id="filled-number"
+                            label="Size"
+                            type="number"
+                            defaultValue={20}
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            variant="filled"
+                            onChange={handleChange}
+                          />
+                        </Grid>
+                      </Grid>
                     </Grid>
                     <Grid item>
-                      <Button variant="contained" color="primary" disabled={started} onClick={handleOnClickStart}>
-                        Start
-                      </Button>
-                    </Grid>
-                    <Grid item>
-                      <Button variant="contained" color="primary" disabled={!started} onClick={handleOnClickStop}>
-                        Stop
-                      </Button>
-                    </Grid>
-                    <Grid item>
-                      <Button variant="outlined" color="primary" disabled={!started} onClick={handleOnClickStep}>
-                        Step
-                      </Button>
+                      <Grid container spacing={2}>
+                        <Grid item>
+                          <Button variant="contained" color="primary" disabled={started} onClick={handleOnClickStart}>
+                            Start
+                          </Button>
+                        </Grid>
+                        <Grid item>
+                          <Button variant="contained" color="primary" disabled={!started} onClick={handleOnClickStop}>
+                            Stop
+                          </Button>
+                        </Grid>
+                        <Grid item>
+                          <Button variant="outlined" color="primary" disabled={!started} onClick={handleOnClickStep}>
+                            Step
+                          </Button>
+                        </Grid>
+                      </Grid>
                     </Grid>
                   </Grid>
                 </div>
