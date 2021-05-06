@@ -136,10 +136,10 @@ export default function Main() {
     var newArray = [];
     switch (mode) {
       case "Synchronous":
-        newArray = Array.from({ length: size }).map((x) => false); // replace with function call(ruleArray, inputArray)
+        newArray = syncOrder(ruleArray, inputArray); // replace with function call(ruleArray, inputArray)
         break;
       case "Random Independent":
-        newArray = Array.from({ length: size }).map((x) => false); // replace with function call(ruleArray, inputArray)
+        newArray = randIndOrder(ruleArray, inputArray); // replace with function call(ruleArray, inputArray)
         break;
       case "Random Order":
         newArray = randOrder(ruleArray, inputArray); // replace with function call(ruleArray, inputArray)
