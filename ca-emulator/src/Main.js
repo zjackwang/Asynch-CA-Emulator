@@ -60,18 +60,23 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
  * 2. asynch - random w/o replacement
  */
 export default function Main() {
-  let MAXROWS = 30;
+  let MAXROWS = 20;
   const classes = useStyles();
 
   const [size, setSize] = React.useState(20);
+  const [row, setRow] = React.useState(0);
   const [ruleArray, setRuleArray] = React.useState(
     Array.from({ length: 8 }).map((x) => false)
   );
   const [inputArray, setInputArray] = React.useState(
     Array.from({ length: 20 }).map((x) => false)
   );
-  const [outputArrays, setOutputArrays] = React.useState([]);
-  const [started, setStarted] = React.useState(false);
+  const [outputArrays, setOutputArrays] = React.useState(
+    Array.from({ length: 20 }).map((x) =>
+      Array.from({ length: 20 }).map((x) => false)
+    )
+  );
+  const [started, setStarted] = React.useState(false); // TODO disable adjusting rules/inputs once started
   const [mode, setMode] = React.useState("Synchronous");
 
   const modes = ["Synchronous", "Random Independent", "Random Order", "Cyclic"];
@@ -85,15 +90,15 @@ export default function Main() {
     const newArr = ruleArray;
     newArr[index] = value;
     setRuleArray(newArr);
-    console.log(value);
-    console.log(newArr);
+    // console.log(value);
+    // console.log(newArr);
   };
 
   const handleChildSetInputArray = (index, value) => {
     const newArr = inputArray;
     newArr[index] = value;
     setInputArray(newArr);
-    console.log(newArr);
+    // console.log(newArr);
   };
 
   const handleChange = (event) => {
@@ -109,7 +114,11 @@ export default function Main() {
 
   const handleOnClickStop = () => {
     setStarted(false);
-    setOutputArrays([]);
+    setOutputArrays(
+      Array.from({ length: 20 }).map((x) =>
+        Array.from({ length: 20 }).map((x) => false)
+      )
+    );
   };
 
   const handleOnClickStep = () => {
@@ -131,7 +140,16 @@ export default function Main() {
         newArray = Array.from({ length: size }).map((x) => false); // replace with function call(ruleArray, inputArray) for synchronous
         break;
     }
-    setOutputArrays((oldArray) => [...oldArray, newArray]);
+
+    setOutputArrays((oldArray) => {
+      if (row === MAXROWS - 1) {
+        oldArray.shift();
+        return [...oldArray, newArray];
+      }
+      oldArray[row] = newArray;
+      setRow(row + 1);
+      return oldArray;
+    });
     setInputArray(newArray);
   };
 
@@ -259,7 +277,7 @@ export default function Main() {
               direction="column"
               spacing={1}
               alignItems="flex-start"
-              classname={classes.gridContent}
+              className={classes.gridContent}
             >
               <Grid item>
                 <Container>
@@ -269,8 +287,8 @@ export default function Main() {
                   />
                 </Container>
               </Grid>
-              {outputArrays.map((outputArray) => (
-                <Grid item key={outputArray.key}>
+              {outputArrays.map((outputArray, index) => (
+                <Grid item key={index}>
                   <Container>
                     <OutputCellGrid values={outputArray} />
                   </Container>
