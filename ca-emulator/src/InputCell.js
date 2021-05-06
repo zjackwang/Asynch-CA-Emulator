@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 import { Paper } from "@material-ui/core";
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   paperOff: {
@@ -15,18 +15,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function InputCell({index, onChildSetInputArray}) {
+export default function InputCell({ index, started, onChildSetInputArray }) {
   const classes = useStyles();
   const [checked, setChecked] = React.useState(false);
 
   const handleChange = (event) => {
-    const newVal = !checked;
-    setChecked(newVal);
-    onChildSetInputArray(index, newVal);
+    if (!started) {
+      const newVal = !checked;
+      setChecked(newVal);
+      onChildSetInputArray(index, newVal);
+    }
   };
 
-
   return (
-    <Paper className={checked ? classes.paperOn : classes.paperOff} onClick={handleChange}/>
-  )
+    <Paper
+      className={checked ? classes.paperOn : classes.paperOff}
+      onClick={handleChange}
+    />
+  );
 }

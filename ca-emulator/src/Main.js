@@ -60,11 +60,12 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
  * 2. asynch - random w/o replacement
  */
 export default function Main() {
-  let MAXROWS = 20;
   const classes = useStyles();
 
   const [size, setSize] = React.useState(20);
-  const [row, setRow] = React.useState(0);
+  const [rows, setRows] = React.useState(0);
+  const [showInput, setShowInput] = React.useState(true);
+  const [maxRows, setMaxRows] = React.useState(20);
   const [ruleArray, setRuleArray] = React.useState(
     Array.from({ length: 8 }).map((x) => false)
   );
@@ -114,11 +115,15 @@ export default function Main() {
 
   const handleOnClickStop = () => {
     setStarted(false);
+    setInputArray(Array.from({ length: size }).map((x) => false));
     setOutputArrays(
-      Array.from({ length: 20 }).map((x) =>
-        Array.from({ length: 20 }).map((x) => false)
+      Array.from({ length: size }).map((x) =>
+        Array.from({ length: size }).map((x) => false)
       )
     );
+    setShowInput(true);
+    setMaxRows(20);
+    setRows(0);
   };
 
   const handleOnClickStep = () => {
@@ -142,12 +147,16 @@ export default function Main() {
     }
 
     setOutputArrays((oldArray) => {
-      if (row === MAXROWS - 1) {
+      if (rows === maxRows) {
+        if (showInput) {
+          setShowInput(false);
+          setMaxRows(maxRows + 1);
+        }
         oldArray.shift();
         return [...oldArray, newArray];
       }
-      oldArray[row] = newArray;
-      setRow(row + 1);
+      oldArray[rows] = newArray;
+      setRows(rows + 1);
       return oldArray;
     });
     setInputArray(newArray);
@@ -190,7 +199,10 @@ export default function Main() {
                 >
                   Enter your rule.
                 </Typography>
-                <Rules onChildSetRuleArray={handleChildSetRuleArray} />
+                <Rules
+                  started={started}
+                  onChildSetRuleArray={handleChildSetRuleArray}
+                />
                 <div className={classes.heroButtons}>
                   <Grid
                     container
@@ -279,14 +291,18 @@ export default function Main() {
               alignItems="flex-start"
               className={classes.gridContent}
             >
-              <Grid item>
-                <Container>
-                  <InputCellGrid
-                    size={size}
-                    onChildSetInputArray={handleChildSetInputArray}
-                  />
-                </Container>
-              </Grid>
+              {(showInput || rows < maxRows) && (
+                <Grid item>
+                  <Container>
+                    <InputCellGrid
+                      size={size}
+                      started={started}
+                      onChildSetInputArray={handleChildSetInputArray}
+                    />
+                  </Container>
+                </Grid>
+              )}
+
               {outputArrays.map((outputArray, index) => (
                 <Grid item key={index}>
                   <Container>

@@ -1,9 +1,8 @@
-import React from 'react';
+import React from "react";
 import { Grid } from "@material-ui/core";
 import Rule from "./Rule.js";
 
-export default function Rules({onChildSetRuleArray}) {
-
+export default function Rules({ started, onChildSetRuleArray }) {
   const ruleInputs = [
     {
       index: 0,
@@ -48,7 +47,7 @@ export default function Rules({onChildSetRuleArray}) {
       right: false,
     },
     {
-      index: 7, 
+      index: 7,
       left: true,
       middle: true,
       right: true,
@@ -59,9 +58,13 @@ export default function Rules({onChildSetRuleArray}) {
     <Grid container justify="center" spacing={4}>
       {ruleInputs.map((input) => (
         <Grid key={input.index} item xs={3}>
-          <Rule left={input.left} middle={input.middle} right={input.right} index={input.index} onChildSetRuleArray={onChildSetRuleArray}/>
+          <Rule
+            {...input}
+            started={started}
+            onChildSetRuleArray={onChildSetRuleArray}
+          />
         </Grid>
       ))}
     </Grid>
-  )
+  );
 }

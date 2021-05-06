@@ -1,8 +1,6 @@
-
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Paper } from "@material-ui/core";
-
 
 const useStyles = makeStyles((theme) => ({
   paperOff: {
@@ -17,23 +15,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Rule({left, middle, right, index, onChildSetRuleArray}) {
+export default function Rule({
+  left,
+  middle,
+  right,
+  index,
+  started,
+  onChildSetRuleArray,
+}) {
   const classes = useStyles();
   const [checked, setChecked] = React.useState(false);
 
   const handleChange = (event) => {
-    const newVal = !checked;
-    setChecked(newVal);
-    onChildSetRuleArray(index, newVal);
+    if (!started) {
+      const newVal = !checked;
+      setChecked(newVal);
+      onChildSetRuleArray(index, newVal);
+    }
   };
 
-
   return (
-    <Grid 
+    <Grid
       container
-      direction='column'
-      justify='center'
-      alignItems='center'
+      direction="column"
+      justify="center"
+      alignItems="center"
       spacing={1}
     >
       <Grid item xs={12}>
@@ -42,16 +48,19 @@ export default function Rule({left, middle, right, index, onChildSetRuleArray}) 
             <Paper className={left ? classes.paperOn : classes.paperOff} />
           </Grid>
           <Grid item>
-            <Paper className={middle ? classes.paperOn : classes.paperOff}/>
+            <Paper className={middle ? classes.paperOn : classes.paperOff} />
           </Grid>
           <Grid item>
-            <Paper className={right ? classes.paperOn : classes.paperOff}/>
+            <Paper className={right ? classes.paperOn : classes.paperOff} />
           </Grid>
         </Grid>
       </Grid>
       <Grid item xs={12}>
-        <Paper className={checked ? classes.paperOn : classes.paperOff} onClick={handleChange}/>
+        <Paper
+          className={checked ? classes.paperOn : classes.paperOff}
+          onClick={handleChange}
+        />
       </Grid>
     </Grid>
-  )
+  );
 }
