@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
 import CellsIcon from '@material-ui/icons/GroupWork';
@@ -11,7 +11,8 @@ import Container from '@material-ui/core/Container';
 import Link from '@material-ui/core/Link';
 import TextField from '@material-ui/core/TextField';
 import Rules from './Rules';
-import CellGrid from './CellGrid';
+import InputCellGrid from './InputCellGrid';
+import OutputCellGrid from './OutputCellGrid';
 
 function Copyright() {
   return (
@@ -41,6 +42,11 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(6),
   },
+  gridContent: {
+    padding: theme.spacing(8, 0, 6),
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(4),
+  },
 }));
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -48,10 +54,52 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 export default function Main() {
   const classes = useStyles();
 
+
   const [size, setSize] = React.useState(20);
+  const [ruleArray, setRuleArray] = React.useState(Array.from({length: 8}).map(x => false));
+  const [inputArray, setInputArray] = React.useState(Array.from({length: 20}).map(x => false));
+  const [outputArrays, setOutputArrays] = React.useState([]);
+  const [started, setStarted] = React.useState(false);
+
+  useEffect(() => {
+    console.log(ruleArray);
+    console.log(inputArray);
+  }, [ruleArray, inputArray]);
+
+  const handleChildSetRuleArray = (index, value) => {
+    const newArr = ruleArray;
+    newArr[index] = value;
+    setRuleArray(newArr);
+    console.log(value);
+    console.log(newArr);
+  };
+
+  const handleChildSetInputArray = (index, value) => {
+    const newArr = inputArray;
+    newArr[index] = value;
+    setInputArray(newArr);
+    console.log(newArr);
+  };
 
   const handleChange = (event) => {
-    setSize(event.target.value);
+    const newSize = event.target.value;
+    setSize(newSize);
+    setInputArray(Array.from({length: newSize}).map(x => false))
+  };
+
+  const handleOnClickStart = () => {
+    setStarted(true);
+    setOutputArrays(oldArray => [...oldArray, Array.from({length: size}).map(x => false)])
+    console.log(outputArrays);
+  }
+
+  const handleOnClickStop = () => {
+    setStarted(false);
+    setOutputArrays([])
+  }
+
+  const handleOnClickStep = () => {
+    setOutputArrays(oldArray => [...oldArray, Array.from({length: size}).map(x => false)])
   };
 
   return (
@@ -72,7 +120,7 @@ export default function Main() {
           justify='center'
           alignItems='center'
         >
-          <Grid item xs={6}>
+          <Grid item xs={6} className={classes.heroContent}>
             <div className={classes.heroContent}>
               <Container maxWidth="sm">
                 <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
@@ -81,7 +129,7 @@ export default function Main() {
                 <Typography variant="h5" align="center" color="textSecondary" paragraph>
                   Enter your rule.
                 </Typography>
-                <Rules/>
+                <Rules onChildSetRuleArray={handleChildSetRuleArray}/>
                 <div className={classes.heroButtons}>
                   <Grid container spacing={2} justify="center" alignItems="center">
                     <Grid item>
@@ -98,12 +146,17 @@ export default function Main() {
                     />
                     </Grid>
                     <Grid item>
-                      <Button variant="contained" color="primary">
+                      <Button variant="contained" color="primary" disabled={started} onClick={handleOnClickStart}>
                         Start
                       </Button>
                     </Grid>
                     <Grid item>
-                      <Button variant="outlined" color="primary">
+                      <Button variant="contained" color="primary" disabled={!started} onClick={handleOnClickStop}>
+                        Stop
+                      </Button>
+                    </Grid>
+                    <Grid item>
+                      <Button variant="outlined" color="primary" disabled={!started} onClick={handleOnClickStep}>
                         Step
                       </Button>
                     </Grid>
@@ -113,9 +166,20 @@ export default function Main() {
             </div>
           </Grid>
           <Grid item>
-            <Container>
-              <CellGrid size={size}/>
-            </Container>
+            <Grid container direction="column" spacing={1} alignItems="flex-start" classname={classes.gridContent}>
+              <Grid item>
+                <Container>
+                  <InputCellGrid size={size} onChildSetInputArray={handleChildSetInputArray}/>
+                </Container>
+              </Grid>
+              {outputArrays.map((outputArray) => (
+                <Grid item key={outputArray.key}>
+                  <Container>
+                    <OutputCellGrid values={outputArray}/>
+                  </Container>
+                </Grid>
+              ))}
+            </Grid>
           </Grid>
         </Grid>
       </main>

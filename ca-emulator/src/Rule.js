@@ -17,12 +17,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Rule(props) {
+export default function Rule({left, middle, right, index, onChildSetRuleArray}) {
   const classes = useStyles();
   const [checked, setChecked] = React.useState(false);
 
   const handleChange = (event) => {
-    setChecked(!checked);
+    const newVal = !checked;
+    setChecked(newVal);
+    onChildSetRuleArray(index, newVal);
   };
 
 
@@ -37,13 +39,13 @@ export default function Rule(props) {
       <Grid item xs={12}>
         <Grid container spacing={1}>
           <Grid item>
-            <Paper className={props.left ? classes.paperOn : classes.paperOff} />
+            <Paper className={left ? classes.paperOn : classes.paperOff} />
           </Grid>
           <Grid item>
-            <Paper className={props.middle ? classes.paperOn : classes.paperOff}/>
+            <Paper className={middle ? classes.paperOn : classes.paperOff}/>
           </Grid>
           <Grid item>
-            <Paper className={props.right ? classes.paperOn : classes.paperOff}/>
+            <Paper className={right ? classes.paperOn : classes.paperOff}/>
           </Grid>
         </Grid>
       </Grid>
