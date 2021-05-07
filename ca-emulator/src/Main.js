@@ -76,6 +76,9 @@ export default function Main() {
   const [inputArray, setInputArray] = useState(
     Array.from({ length: 20 }).map((x) => false)
   );
+  const [originalInputArray, setOriginalInputArray] = useState(
+    Array.from({ length: 20 }).map((x) => false)
+  );
   const [outputArrays, setOutputArrays] = useState(
     Array.from({ length: 20 }).map((x) =>
       Array.from({ length: 20 }).map((x) => false)
@@ -115,6 +118,7 @@ export default function Main() {
     const newArr = inputArray;
     newArr[index] = value;
     setInputArray(newArr);
+    setOriginalInputArray(newArr);
     // console.log(newArr);
   };
 
@@ -122,6 +126,7 @@ export default function Main() {
     const newSize = event.target.value;
     setSize(newSize);
     setInputArray(Array.from({ length: newSize }).map((x) => false));
+    setOriginalInputArray(Array.from({ length: newSize }).map((x) => false));
   };
 
   let interval;
@@ -150,7 +155,7 @@ export default function Main() {
   const handleOnClickStop = () => {
     setStarted(false);
     setRunning(false);
-    setInputArray(Array.from({ length: size }).map((x) => false));
+    setInputArray(originalInputArray);
     setOutputArrays(
       Array.from({ length: size }).map((x) =>
         Array.from({ length: size }).map((x) => false)
