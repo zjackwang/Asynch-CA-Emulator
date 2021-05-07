@@ -6,7 +6,7 @@ const useStyles = makeStyles((theme) => ({
   paperOff: {
     height: theme.spacing(2),
     width: theme.spacing(2),
-    backgroundColor: theme.palette.secondary.light,
+    backgroundColor: '#ff99bb',
   },
   paperOn: {
     height: theme.spacing(2),

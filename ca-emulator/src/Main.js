@@ -54,6 +54,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(4),
     marginBottom: theme.spacing(4),
   },
+  inputRow: {
+    marginBottom: theme.spacing(2),
+  }
 }));
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -187,10 +190,6 @@ export default function Main() {
     }
     setOutputArrays((oldArray) => {
       if (rowRef.current === maxRowRef.current) {
-        if (showInputRef.current) {
-          setShowInput(false);
-          setMaxRows(maxRowRef.current + 1);
-        }
         oldArray.shift();
         return [...oldArray, newArray];
       }
@@ -236,7 +235,7 @@ export default function Main() {
                   color="textSecondary"
                   paragraph
                 >
-                  Enter your rule.
+                  Enter your rules below and specify your initialization for the first row of the grid by toggling the squares.
                 </Typography>
                 <Rules
                   started={started}
@@ -340,17 +339,15 @@ export default function Main() {
               alignItems="flex-start"
               className={classes.gridContent}
             >
-              {(showInput || rows < maxRows) && (
-                <Grid item>
-                  <Container>
-                    <InputCellGrid
-                      size={size}
-                      started={started}
-                      onChildSetInputArray={handleChildSetInputArray}
-                    />
-                  </Container>
-                </Grid>
-              )}
+              <Grid item className={classes.inputRow} >
+                <Container>
+                  <InputCellGrid
+                    size={size}
+                    started={started}
+                    onChildSetInputArray={handleChildSetInputArray}
+                  />
+                </Container>
+              </Grid>
 
               {outputArrays.map((outputArray, index) => (
                 <Grid item key={index}>
