@@ -95,6 +95,8 @@ export default function Main() {
   showInputRef.current = showInput;
   const runningRef = useRef(0);
   runningRef.current = running;
+  const inputArrayRef = useRef([]);
+  inputArrayRef.current = inputArray;
 
   useEffect(() => {
     console.log(ruleArray);
@@ -124,9 +126,7 @@ export default function Main() {
 
   let interval;
 
-  const handleOnClickRun = () => {
-    setStarted(true);
-    setRunning(true);
+  useEffect(() => {
     interval = setInterval(() => {
       console.log(runningRef.current);
       if (runningRef.current) {
@@ -135,6 +135,11 @@ export default function Main() {
         clearInterval(interval);
       }
     }, 1000);
+  }, [running]);
+
+  const handleOnClickRun = () => {
+    setStarted(true);
+    setRunning(true);
   };
 
   const handleOnClickStart = () => {
@@ -160,16 +165,16 @@ export default function Main() {
     var newArray = [];
     switch (mode) {
       case "Synchronous":
-        newArray = syncOrder(ruleArray, inputArray); // replace with function call(ruleArray, inputArray)
+        newArray = syncOrder(ruleArray, inputArrayRef.current); // replace with function call(ruleArray, inputArray)
         break;
       case "Random Independent":
-        newArray = randIndOrder(ruleArray, inputArray); // replace with function call(ruleArray, inputArray)
+        newArray = randIndOrder(ruleArray, inputArrayRef.current); // replace with function call(ruleArray, inputArray)
         break;
       case "Random Order":
-        newArray = randOrder(ruleArray, inputArray); // replace with function call(ruleArray, inputArray)
+        newArray = randOrder(ruleArray, inputArrayRef.current); // replace with function call(ruleArray, inputArray)
         break;
       case "Cyclic":
-        newArray = cyclicOrder(ruleArray, inputArray); // replace with function call(ruleArray, inputArray)
+        newArray = cyclicOrder(ruleArray, inputArrayRef.current); // replace with function call(ruleArray, inputArray)
         break;
       default:
         newArray = Array.from({ length: size }).map((x) => false); // replace with function call(ruleArray, inputArray) for synchronous
